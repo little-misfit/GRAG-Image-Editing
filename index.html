@@ -3,294 +3,319 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Group-Relative Attention Guidance for Image Editing — Project Page</title>
-  <meta name="description" content="Interactive project page: abstract + principle diagram + results with draggable before/after and guidance-strength slider." />
+  <title>Group-Relative Attention Guidance — Project Page (Minimal image sizing)</title>
   <style>
     :root {
-      --bg: #f7f7f8;
+      --bg: #ffffff;
       --card: #ffffff;
       --ink: #111111;
       --muted: #666666;
-      --border: #e6e6e8;
-      --accent: #000000;
+      --border: #ffffff;
       --radius: 16px;
+      --sample-media-max-h: 220px; /* ▶ 仅通过限制图片最大高度/宽度来防溢出 */
     }
-    html, body { margin:0; padding:0; background:var(--bg); color:var(--ink); font: 16px/1.55 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,Apple Color Emoji,Segoe UI Emoji; }
+    *{box-sizing:border-box}
+    body { margin:0; padding:0; background:var(--bg); color:var(--ink); font:16px/1.6 -apple-system,BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; }
     .container { max-width: 1120px; margin: 0 auto; padding: 24px; }
-    h1 { font-weight: 800; letter-spacing: -0.02em; margin: 0 0 8px; font-size: clamp(28px, 4vw, 44px); }
-    h2 { font-size: clamp(22px, 3vw, 30px); margin: 0 0 16px; font-weight: 700; }
+    h1 { font-size: 40px; margin-bottom: 8px; font-weight: 800; }
+    h2 { font-size: 28px; margin: 24px 0 16px; font-weight: 700; }
     h3 { font-size: 18px; margin: 0 0 8px; font-weight: 700; }
     .muted { color: var(--muted); }
-    .section { padding: 28px 0; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 1px 2px rgba(0,0,0,.04); }
-    .stack { display: grid; gap: 16px; }
-    .row { display: grid; gap: 16px; grid-template-columns: 1fr; }
-    @media (min-width: 980px) { .row { grid-template-columns: 1.2fr 1fr; } }
-    .pill { display:inline-flex; align-items:center; border:1px solid var(--border); background:#fff; padding:4px 10px; border-radius:999px; font-size:12px; }
-    .figure { overflow:hidden; border-radius: 12px; border:1px solid var(--border); }
-    .figure img { display:block; width:100%; height:auto; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 16px; }
 
-    /* Sample card layout */
-    .sample { padding: 20px; }
-    .sample-grid { display:grid; gap:16px; grid-template-columns: 1fr; }
-    @media (min-width: 1024px) { .sample-grid { grid-template-columns: 1fr 2fr; } }
-    .thumb { border:1px solid var(--border); border-radius:12px; overflow:hidden; background:#f3f3f4; }
-    .thumb img { display:block; width:100%; height:auto; }
+    /* 固定 intro 图片宽度（已存在的做法保留） */
+    .intro-figure img { max-width: 800px; width: 100%; height: auto; display:block; margin: 0 auto; border-radius: 12px; }
 
-    /* Compare widget */
-    .compare { position: relative; width: 100%; overflow: hidden; border-radius: 12px; border:1px solid var(--border); background:#eee; }
-    .compare img { display:block; width:100%; height:auto; user-select:none; -webkit-user-drag:none; }
+    /* 三列布局（不改变原有结构） */
+    #samples { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    .sample { display:flex; flex-direction:column; gap:12px; }
+
+    /* ▶ 最小改动：仅通过限制图片尺寸，避免撑破卡片 */
+    .sample .thumb img,
+    .sample .compare img {
+      max-width: 100%;
+      height: auto;
+      max-height: var(--sample-media-max-h);
+      display: block;
+      border-radius: 8px;
+      -webkit-user-drag: none;
+      user-select: none;
+      pointer-events: none; /* 避免成为事件目标，拖动更顺畅 */
+    }
+    /* 对比容器自身占满可用宽度，以便图片 100% 宽度生效 */
+    .compare { width: 100%; border:1px solid var(--border); border-radius: 12px; position: relative; background:#f2f2f3; user-select:none; -webkit-user-select:none; touch-action:none; }
     .after-clip { position:absolute; inset:0; clip-path: inset(0 50% 0 0); }
-    .handle { position:absolute; inset:0; pointer-events:none; }
-    .handle-line { position:absolute; top:0; bottom:0; width:2px; background:#ffffff; left:50%; transform:translateX(-1px); box-shadow:0 0 0 1px rgba(0,0,0,.08); }
-    .handle-pill { position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); background:#fff; padding:4px 8px; border-radius:999px; font-size:12px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,.08); }
-    .compare[aria-busy="true"] { opacity:.6; }
+    .handle-line { position:absolute; top:0; bottom:0; left:50%; width:2px; background:#ffffff; box-shadow:0 0 0 1px rgba(0,0,0,.08); }
+    .handle-pill { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:#fff; padding:4px 8px; border-radius:999px; border:1px solid var(--border); font-size:12px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
 
-    /* Slider */
+    /* ▶ 最小改动：让原图与对比控件并排（两列） */
+    .sample-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items:start; }
+
     .slider { width:100%; }
-    .ticks { display:grid; grid-auto-flow: column; gap:8px; justify-content:space-between; margin-top:6px; font-size: 11px; color: var(--muted); }
-    .ticks div.active { color: var(--ink); font-weight: 600; }
-
-    .footer { font-size: 13px; color: var(--muted); padding: 28px 0 56px; }
-    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; background:#f2f2f3; padding:2px 6px; border-radius:6px; border:1px solid var(--border); font-size: 12px; }
+    .ticks { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-top:6px; }
+    .ticks div.active { color: var(--ink); font-weight:600; }
+    .pill { display:inline-flex; align-items:center; border:1px solid var(--border); background:#fff; padding:3px 8px; border-radius:999px; font-size:12px; }
   </style>
 </head>
 <body>
-  <noscript>
-    <div class="container" style="padding-top:16px">
-      <div class="card" style="padding:12px 16px">This page needs JavaScript enabled for the interactive comparisons and slider.</div>
-    </div>
-  </noscript>
-
-  <header class="container section">
+  <div class="container">
     <h1>Group-Relative Attention Guidance for Image Editing</h1>
     <p class="muted">First Author · Second Author · Third Author</p>
-  </header>
+  <!-- Badges container -->
+  <div class="badges">
+  <a class="badge-img" href="https://arxiv.org/abs/2301.01234" target="_blank" rel="noopener" aria-label="View on arXiv">
+  <img alt="arXiv" src="https://img.shields.io/badge/arXiv-2301.01234-b31b1b?logo=arxiv&logoColor=white" />
+  </a>
+  <a class="badge-img" href="https://huggingface.co/spaces/your-org/your-space" target="_blank" rel="noopener" aria-label="Open on Hugging Face">
+  <img alt="Hugging Face" src="https://img.shields.io/badge/HuggingFace-Space-ffd21e?logo=huggingface&logoColor=black" />
+  </a>
+  <a class="badge-img" href="https://github.com/yourname/your-repo" target="_blank" rel="noopener" aria-label="GitHub repository">
+  <!-- 你也可以换成社交风格计数：style=social&label=Star -->
+  <img alt="GitHub" src="https://img.shields.io/badge/GitHub-Code-111111?logo=github&logoColor=white" />
+  </a>
+  </div>
 
-  <main class="container">
-    <!-- Abstract -->
-    <section class="section">
-      <h2>Abstract</h2>
-      <div class="row">
-        <div>
-          <p>
-            We introduce an attention-guidance strategy that directly modulates attention for precise, instruction-following image edits while preserving non-target content. Unlike CFG-style denoising steering, our method operates inside attention layers to stabilize edit semantics and disentangle global bias from sample-specific variations. We demonstrate consistent improvements across common benchmarks and provide interactive visualizations for reproducibility and inspection.
-          </p>
-        </div>
-        <figure class="figure card">
-          <img src="assets/principle_diagram.png" alt="Principle diagram of the proposed attention-guidance pipeline" loading="lazy">
-        </figure>
-      </div>
-    </section>
 
-    <!-- Results -->
-    <section class="section">
-      <h2>Results</h2>
-      <div id="samples" class="stack"></div>
-    </section>
-  </main>
+  <style>
+  /* 让徽章排成一行，并跟你的页面风格匹配 */
+  .badges { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .badge-img img { height: 20px; display:block; }
+  @media (min-width: 980px){ .badges { margin-top: 10px; } }
+  </style>
+    <div class="card intro-figure">
+      <img src="assets/main.jpg" alt="Principle diagram" loading="lazy">
+    </div>
+    <h2>Abstract</h2>
+    <p class="muted">Diffusion Transformers (DiT) have become the backbone of modern instruction-driven image editing. Yet, their capabilities remain limited by a trade-off between reference consistency and responsiveness to editing instructions. We observe a significant bias value at fixed embedding indices, which participates as a weight in the computation of attention scores. Leveraging this phenomenon, we propose Group Relative Attention Guidance (GRAG), which treats the mean of group feature vectors as a bias. By modulating the relative deviations of tokens from this bias, GRAG enhances tokens aligned with the bias direction, thereby producing more accurate editing results. Validation experiments on the latest baselines demonstrate that GRAG effectively improves the editing performance of existing models.</p>
+    <div class="card intro-figure">
+      <img src="assets/intro.jpg" alt="Principle diagram" loading="lazy">
+    </div>
 
-  <footer class="container footer">
-    © <span id="year"></span> Attention Guidance Project Page. Replace this footer with your lab, grant and dataset attributions.
-  </footer>
+    <h2>Results</h2>
+    <div id="samples"></div>
+  </div>
 
   <script>
-    // ============================
-    //  CONFIG — Replace with yours
-    // ============================
     const SAMPLES = [
       {
         id: 's1',
         title: 'Sky Recolor',
         original: 'assets/samples/sky/original.jpg',
         instruction: 'Turn the cloudy sky into a vivid warm sunset.',
-        before: 'assets/samples/sky/before.jpg', // guidance OFF
+        before: 'assets/samples/sky/before.jpg',
         guidanceVariants: [
           { label: 'λ=0.90', src: 'assets/samples/sky/after_0.90.jpg' },
           { label: 'λ=0.95', src: 'assets/samples/sky/after_0.95.jpg' },
-          { label: 'λ=1.00', src: 'assets/samples/sky/after_1.00.jpg' },
           { label: 'λ=1.05', src: 'assets/samples/sky/after_1.05.jpg' },
           { label: 'λ=1.10', src: 'assets/samples/sky/after_1.10.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.15.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.20.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.25.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.30.jpg' },
         ],
       },
       {
         id: 's2',
         title: 'Object Replacement',
         original: 'assets/samples/object/original.jpg',
-        instruction: 'Replace the mug with a blue teapot; preserve lighting.',
+        instruction: 'Replace the mug with a blue teapot.',
         before: 'assets/samples/object/before.jpg',
         guidanceVariants: [
           { label: 'λ=0.90', src: 'assets/samples/object/after_0.90.jpg' },
           { label: 'λ=0.95', src: 'assets/samples/object/after_0.95.jpg' },
-          { label: 'λ=1.00', src: 'assets/samples/object/after_1.00.jpg' },
           { label: 'λ=1.05', src: 'assets/samples/object/after_1.05.jpg' },
           { label: 'λ=1.10', src: 'assets/samples/object/after_1.10.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/object/after_1.15.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/object/after_1.20.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/object/after_1.25.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/object/after_1.30.jpg' },
+        ],
+      },
+      {
+        id: 's3',
+        title: 'Style Transfer',
+        original: 'assets/samples/style/original.jpg',
+        instruction: 'Render the scene in watercolor style.',
+        before: 'assets/samples/style/before.jpg',
+        guidanceVariants: [
+          { label: 'λ=0.90', src: 'assets/samples/style/after_0.90.jpg' },
+          { label: 'λ=0.95', src: 'assets/samples/style/after_0.95.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/style/after_1.05.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/style/after_1.10.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/style/after_1.15.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/style/after_1.20.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/style/after_1.25.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/style/after_1.30.jpg' },
+        ],
+      },
+      {
+        id: 's1',
+        title: 'Sky Recolor',
+        original: 'assets/samples/sky/original.jpg',
+        instruction: 'Turn the cloudy sky into a vivid warm sunset.',
+        before: 'assets/samples/sky/before.jpg',
+        guidanceVariants: [
+          { label: 'λ=0.90', src: 'assets/samples/sky/after_0.90.jpg' },
+          { label: 'λ=0.95', src: 'assets/samples/sky/after_0.95.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.05.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.10.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.15.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.20.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.25.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.30.jpg' },
+        ],
+      },
+      {
+        id: 's2',
+        title: 'Object Replacement',
+        original: 'assets/samples/object/original.jpg',
+        instruction: 'Replace the mug with a blue teapot.',
+        before: 'assets/samples/object/before.jpg',
+        guidanceVariants: [
+          { label: 'λ=0.90', src: 'assets/samples/object/after_0.90.jpg' },
+          { label: 'λ=0.95', src: 'assets/samples/object/after_0.95.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/object/after_1.05.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/object/after_1.10.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/object/after_1.15.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/object/after_1.20.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/object/after_1.25.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/object/after_1.30.jpg' },
+        ],
+      },
+      {
+        id: 's3',
+        title: 'Style Transfer',
+        original: 'assets/samples/style/original.jpg',
+        instruction: 'Render the scene in watercolor style.',
+        before: 'assets/samples/style/before.jpg',
+        guidanceVariants: [
+          { label: 'λ=0.90', src: 'assets/samples/style/after_0.90.jpg' },
+          { label: 'λ=0.95', src: 'assets/samples/style/after_0.95.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/style/after_1.05.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/style/after_1.10.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/style/after_1.15.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/style/after_1.20.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/style/after_1.25.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/style/after_1.30.jpg' },
+        ],
+      },
+      {
+        id: 's1',
+        title: 'Sky Recolor',
+        original: 'assets/samples/sky/original.jpg',
+        instruction: 'Turn the cloudy sky into a vivid warm sunset.',
+        before: 'assets/samples/sky/before.jpg',
+        guidanceVariants: [
+          { label: 'λ=0.90', src: 'assets/samples/sky/after_0.90.jpg' },
+          { label: 'λ=0.95', src: 'assets/samples/sky/after_0.95.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.05.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.10.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.15.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.20.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.25.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.30.jpg' },
+        ],
+      },
+      {
+        id: 's2',
+        title: 'Object Replacement',
+        original: 'assets/samples/object/original.jpg',
+        instruction: 'Replace the mug with a blue teapot.',
+        before: 'assets/samples/object/before.jpg',
+        guidanceVariants: [
+          { label: 'λ=0.90', src: 'assets/samples/object/after_0.90.jpg' },
+          { label: 'λ=0.95', src: 'assets/samples/object/after_0.95.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/object/after_1.05.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/object/after_1.10.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/object/after_1.15.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/object/after_1.20.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/object/after_1.25.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/object/after_1.30.jpg' },
+        ],
+      },
+      {
+        id: 's3',
+        title: 'Style Transfer',
+        original: 'assets/samples/style/original.jpg',
+        instruction: 'Render the scene in watercolor style.',
+        before: 'assets/samples/style/before.jpg',
+        guidanceVariants: [
+          { label: 'λ=0.90', src: 'assets/samples/style/after_0.90.jpg' },
+          { label: 'λ=0.95', src: 'assets/samples/style/after_0.95.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/style/after_1.05.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/style/after_1.10.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/style/after_1.15.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/style/after_1.20.jpg' },
+          { label: 'λ=1.05', src: 'assets/samples/style/after_1.25.jpg' },
+          { label: 'λ=1.10', src: 'assets/samples/style/after_1.30.jpg' },
         ],
       },
     ];
 
-    // ============================
-    //  Utilities
-    // ============================
-    const $ = (sel, el = document) => el.querySelector(sel);
-    const el = (tag, cls, html) => { const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; };
+    const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+    const el=(tag,cls,html)=>{const n=document.createElement(tag); if(cls) n.className=cls; if(html!=null) n.innerHTML=html; return n;};
 
-    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+    function makeCompare(beforeSrc, afterSrcInitial){
+      let ratio=0.5; // 0..1
+      const root=el('div','compare');
 
-    // Keyboard helper for sliders (Left/Right arrows)
-    function addArrowKeyAdjust(target, get, set) {
-      target.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') { e.preventDefault(); set(get() - 0.02); }
-        if (e.key === 'ArrowRight') { e.preventDefault(); set(get() + 0.02); }
-      });
-    }
-
-    // ============================
-    //  Compare Widget
-    // ============================
-    function makeCompare(beforeSrc, afterSrcInitial) {
-      let ratio = 0.5; // 0..1
-      const root = el('div', 'compare');
-
-      const before = new Image(); before.src = beforeSrc; before.alt = 'Before (guidance OFF)'; before.loading = 'lazy';
-      const afterWrap = el('div', 'after-clip');
-      const after = new Image(); after.src = afterSrcInitial; after.alt = 'After (guidance ON)'; after.loading = 'lazy';
+      const before=new Image(); before.src=beforeSrc; before.alt='Before'; before.loading='lazy'; before.draggable=false;
+      const afterWrap=el('div','after-clip');
+      const after=new Image(); after.src=afterSrcInitial; after.alt='After'; after.loading='lazy'; after.draggable=false;
       afterWrap.appendChild(after);
 
-      const handle = el('div', 'handle');
-      const line = el('div', 'handle-line');
-      const pill = el('div', 'handle-pill'); pill.textContent = 'Drag';
-      handle.appendChild(line); handle.appendChild(pill);
+      const line=el('div','handle-line');
+      const pill=el('div','handle-pill'); pill.textContent='Drag';
 
-      root.appendChild(before);
-      root.appendChild(afterWrap);
-      root.appendChild(handle);
+      root.append(before, afterWrap, line, pill);
+root.addEventListener('dragstart', (e)=> e.preventDefault());
+root.addEventListener('mousedown', (e)=> e.preventDefault());
 
-      function render() {
-        const pct = clamp(ratio * 100, 0, 100);
-        afterWrap.style.clipPath = `inset(0 ${clamp(100 - pct, 0, 100)}% 0 0)`;
-        line.style.left = pct + '%';
-        pill.style.left = pct + '%';
+      function render(){
+        const pct=clamp(ratio*100,0,100);
+        afterWrap.style.clipPath=`inset(0 ${clamp(100-pct,0,100)}% 0 0)`;
+        line.style.left=pct+'%';
+        pill.style.left=pct+'%';
       }
       render();
 
-      // Pointer interactions
-      let dragging = false; let pointerId = null;
-      function setFromX(clientX) {
-        const rect = root.getBoundingClientRect();
-        const x = clientX - rect.left; ratio = clamp(x / rect.width, 0, 1); render();
-      }
-      root.addEventListener('pointerdown', (e) => {
-        dragging = true; pointerId = e.pointerId; root.setPointerCapture?.(e.pointerId); setFromX(e.clientX);
-      });
-      root.addEventListener('pointermove', (e) => { if (!dragging) return; setFromX(e.clientX); });
-      window.addEventListener('pointerup', (e) => { if (dragging && e.pointerId === pointerId) { dragging = false; root.releasePointerCapture?.(e.pointerId); } });
+      let dragging=false, pid=null;
+      function setFromX(clientX){ const r=root.getBoundingClientRect(); const x=clientX - r.left; ratio=clamp(x/r.width,0,1); render(); }
+      root.addEventListener('pointerdown', (e)=>{ e.preventDefault(); dragging=true; pid=e.pointerId; root.setPointerCapture?.(e.pointerId); setFromX(e.clientX);});
+      root.addEventListener('pointermove',e=>{ if(!dragging) return; setFromX(e.clientX); });
+      window.addEventListener('pointerup',e=>{ if(dragging && e.pointerId===pid){ dragging=false; root.releasePointerCapture?.(e.pointerId); } });
 
-      // Keyboard accessibility: focusable proxy
-      root.setAttribute('role', 'slider');
-      root.setAttribute('tabindex', '0');
-      root.setAttribute('aria-label', 'Before/After comparison');
-      root.setAttribute('aria-valuemin', '0');
-      root.setAttribute('aria-valuemax', '100');
-      root.setAttribute('aria-valuenow', String(Math.round(ratio * 100)));
-      addArrowKeyAdjust(root, () => ratio, (r) => { ratio = clamp(r, 0, 1); root.setAttribute('aria-valuenow', String(Math.round(ratio * 100))); render(); });
+      root.setAttribute('tabindex','0');
+      root.addEventListener('keydown',e=>{ if(e.key==='ArrowLeft'){ ratio=clamp(ratio-0.02,0,1); render(); } if(e.key==='ArrowRight'){ ratio=clamp(ratio+0.02,0,1); render(); } });
 
-      return {
-        root,
-        setAfter(src) { after.src = src; },
-        setBusy(v) { root.setAttribute('aria-busy', v ? 'true' : 'false'); },
-      };
+      return { root, setAfter:(src)=>{ after.src=src; } };
     }
 
-    // ============================
-    //  Sample Card
-    // ============================
-    function makeSampleCard(sample) {
-      const card = el('div', 'card sample');
+    function makeSampleCard(s){
+      const card=el('div','card sample');
+      const header=el('div',null,`<h3>${s.title}</h3><p class="muted" style="margin-top:6px">Instruction: ${s.instruction}</p>`);
 
-      // Title row
-      const top = el('div', 'row', `
-        <div>
-          <h3>${sample.title}</h3>
-          <p class="muted" style="margin-top:6px">Instruction: ${sample.instruction}</p>
-        </div>
-        <div style="display:flex; align-items:flex-start; justify-content:flex-end; gap:8px">
-          <span class="pill" id="pill-${sample.id}"></span>
-        </div>
-      `);
-      card.appendChild(top);
+      // 两列：左原图、右对比控件（最小改动：仅限制图片尺寸）
+      const grid=el('div','sample-grid');
+      const left=el('div','thumb'); left.innerHTML=`<img src="${s.original}" alt="Original" loading="lazy" draggable="false">`;
+      const cmp=makeCompare(s.before, s.guidanceVariants[0]?.src || s.before);
 
-      // Grid: left original, right compare+slider
-      const grid = el('div', 'sample-grid');
+      // 简单强度滑块（可选）
+      const sliderWrap=el('div',null);
+      const label=el('div','muted','Guidance Strength');
+      const slider=document.createElement('input'); slider.type='range'; slider.className='slider'; slider.min=0; slider.max=String(s.guidanceVariants.length-1); slider.step=1; slider.value=0;
+      const ticks=el('div','ticks'); s.guidanceVariants.forEach((v,i)=>{const t=el('div',i===0?'active':'',v.label); t.id=`tick-${s.id}-${i}`; ticks.appendChild(t);});
+      slider.addEventListener('input',()=>{ const idx=parseInt(slider.value,10); const v=s.guidanceVariants[idx]; cmp.setAfter(v.src); s.guidanceVariants.forEach((_,i)=>{ const t=document.getElementById(`tick-${s.id}-${i}`); if(t) t.classList.toggle('active', i===idx); }); });
+      sliderWrap.append(label, slider, ticks);
 
-      const left = el('div');
-      left.innerHTML = `
-        <div class="muted" style="font-size: 13px; margin-bottom:6px">Original</div>
-        <div class="thumb"><img src="${sample.original}" alt="Original" loading="lazy"></div>
-      `;
-
-      const right = el('div');
-      const compare = makeCompare(sample.before, sample.guidanceVariants[0]?.src || sample.before);
-
-      // Slider + ticks
-      const sliderWrap = el('div', 'stack');
-      const label = el('label', 'muted', 'Guidance Strength'); label.setAttribute('for', `slider-${sample.id}`);
-      const slider = el('input', 'slider');
-      slider.type = 'range';
-      slider.min = 0; slider.max = String(sample.guidanceVariants.length - 1); slider.step = 1; slider.value = 0;
-      slider.id = `slider-${sample.id}`; slider.setAttribute('aria-label', 'Guidance strength');
-
-      const ticks = el('div', 'ticks');
-      sample.guidanceVariants.forEach((v, i) => {
-        const t = el('div', i === 0 ? 'active' : '', v.label);
-        t.id = `tick-${sample.id}-${i}`;
-        ticks.appendChild(t);
-      });
-
-      slider.addEventListener('input', () => {
-        const idx = parseInt(slider.value, 10);
-        compare.setBusy(true);
-        // Update AFTER image
-        const variant = sample.guidanceVariants[idx];
-        compare.setAfter(variant.src);
-        // Update pill + ticks
-        const pill = document.getElementById(`pill-${sample.id}`); if (pill) pill.textContent = variant.label;
-        sample.guidanceVariants.forEach((_, i) => {
-          const t = document.getElementById(`tick-${sample.id}-${i}`);
-          if (t) t.classList.toggle('active', i === idx);
-        });
-        // small delay to clear busy state
-        setTimeout(() => compare.setBusy(false), 120);
-      });
-
-      sliderWrap.appendChild(label);
-      sliderWrap.appendChild(slider);
-      sliderWrap.appendChild(ticks);
-
-      right.appendChild(el('div', 'stack', `
-        <div class="muted" style="font-size: 13px;">Guidance: BEFORE vs AFTER</div>
-      `));
-      right.appendChild(compare.root);
-      right.appendChild(sliderWrap);
-
-      grid.appendChild(left);
-      grid.appendChild(right);
-      card.appendChild(grid);
-
-      // Initialize pill label
-      const pill = document.getElementById(`pill-${sample.id}`);
-      if (pill) pill.textContent = sample.guidanceVariants[0]?.label || '';
-
+      grid.append(left, cmp.root);
+      card.append(header, grid, sliderWrap);
       return card;
     }
 
-    // ============================
-    //  Bootstrap
-    // ============================
-    (function init() {
-      document.getElementById('year').textContent = new Date().getFullYear();
-      const list = document.getElementById('samples');
-      SAMPLES.forEach(s => list.appendChild(makeSampleCard(s)));
+    (function init(){
+      const mount=document.getElementById('samples');
+      SAMPLES.forEach(s=>mount.appendChild(makeSampleCard(s)));
     })();
   </script>
 </body>
