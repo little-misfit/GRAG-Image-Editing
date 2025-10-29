@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Group-Relative Attention Guidance — Project Page (Minimal image sizing)</title>
+  <title>Group-Relative Attention Guidance Project Page (Split Components)</title>
   <style>
     :root {
       --bg: #ffffff;
@@ -12,7 +12,7 @@
       --muted: #666666;
       --border: #ffffff;
       --radius: 16px;
-      --sample-media-max-h: 220px; /* ▶ 仅通过限制图片最大高度/宽度来防溢出 */
+      --sample-media-max-h: 220px; 
     }
     *{box-sizing:border-box}
     body { margin:0; padding:0; background:var(--bg); color:var(--ink); font:16px/1.6 -apple-system,BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; }
@@ -23,16 +23,15 @@
     .muted { color: var(--muted); }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 16px; }
 
-    /* 固定 intro 图片宽度（已存在的做法保留） */
     .intro-figure img { max-width: 800px; width: 100%; height: auto; display:block; margin: 0 auto; border-radius: 12px; }
 
-    /* 三列布局（不改变原有结构） */
-    #samples { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    .grid3 { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
     .sample { display:flex; flex-direction:column; gap:12px; }
 
-    /* ▶ 最小改动：仅通过限制图片尺寸，避免撑破卡片 */
+ 
     .sample .thumb img,
-    .sample .compare img {
+    .sample .compare img,
+    .sample .preview img {
       max-width: 100%;
       height: auto;
       max-height: var(--sample-media-max-h);
@@ -40,95 +39,184 @@
       border-radius: 8px;
       -webkit-user-drag: none;
       user-select: none;
-      pointer-events: none; /* 避免成为事件目标，拖动更顺畅 */
+      pointer-events: none; 
     }
-    /* 对比容器自身占满可用宽度，以便图片 100% 宽度生效 */
+
     .compare { width: 100%; border:1px solid var(--border); border-radius: 12px; position: relative; background:#f2f2f3; user-select:none; -webkit-user-select:none; touch-action:none; }
     .after-clip { position:absolute; inset:0; clip-path: inset(0 50% 0 0); }
-    .handle-line { position:absolute; top:0; bottom:0; left:50%; width:2px; background:#ffffff; box-shadow:0 0 0 1px rgba(0,0,0,.08); }
-    .handle-pill { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:#fff; padding:4px 8px; border-radius:999px; border:1px solid var(--border); font-size:12px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
-
-    /* ▶ 最小改动：让原图与对比控件并排（两列） */
+    .handle-line { position:absolute; top:0; bottom:0; left:50%; width:1px; background:rgba(255, 255, 255, 0.6); box-shadow:0 0 0 1px rgba(0,0,0,.08); z-index: 1;}
+    .handle-pill { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(255, 255, 255, 0.1); padding:1px 1px; border-radius:999px; border:1px solid var(--border); font-size:18px; box-shadow:0 2px 8px rgba(0,0,0,.08); z-index: 2;}
+   
     .sample-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items:start; }
 
+
     .slider { width:100%; }
-    .ticks { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-top:6px; }
+    .ticks { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-top:6px; flex-wrap:wrap; gap:4px; }
     .ticks div.active { color: var(--ink); font-weight:600; }
     .pill { display:inline-flex; align-items:center; border:1px solid var(--border); background:#fff; padding:3px 8px; border-radius:999px; font-size:12px; }
+
+
+    .badges { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+    .badge-img img { height: 20px; display:block; }
+    @media (min-width: 980px){ .badges { margin-top: 10px; } }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Group-Relative Attention Guidance for Image Editing</h1>
-    <p class="muted">First Author · Second Author · Third Author</p>
-  <!-- Badges container -->
-  <div class="badges">
-  <a class="badge-img" href="https://arxiv.org/abs/2301.01234" target="_blank" rel="noopener" aria-label="View on arXiv">
-  <img alt="arXiv" src="https://img.shields.io/badge/arXiv-2301.01234-b31b1b?logo=arxiv&logoColor=white" />
-  </a>
-  <a class="badge-img" href="https://huggingface.co/spaces/your-org/your-space" target="_blank" rel="noopener" aria-label="Open on Hugging Face">
-  <img alt="Hugging Face" src="https://img.shields.io/badge/HuggingFace-Space-ffd21e?logo=huggingface&logoColor=black" />
-  </a>
-  <a class="badge-img" href="https://github.com/yourname/your-repo" target="_blank" rel="noopener" aria-label="GitHub repository">
-  <!-- 你也可以换成社交风格计数：style=social&label=Star -->
-  <img alt="GitHub" src="https://img.shields.io/badge/GitHub-Code-111111?logo=github&logoColor=white" />
-  </a>
-  </div>
+    <p class="muted"><a href="https://little-misfit.github.io/">Xuanpu Zhang</a>, <a href="https://nxsedson.github.io/">Xuesong Niu</a>, Ruidong Chen, <a href="https://scholar.google.com/citations?user=G-mHRrEAAAAJ&hl=zh-CN">Dan Song</a>, <a href="https://zengjianhao.github.io/">Jianhao Zeng</a>, Penghui Du, Haoxiang Cao, Kai Wu, An-an Liu.</p>
 
+    <!-- Badges container -->
+    <div class="badges">
+      <a class="badge-img" href="https://arxiv.org/abs/2301.01234" target="_blank" rel="noopener" aria-label="View on arXiv">
+        <img alt="arXiv" src="https://img.shields.io/badge/arXiv-2301.01234-b31b1b?logo=arxiv&logoColor=white" />
+      </a>
+      <a class="badge-img" href="https://github.com/little-misfit/GRAG-Image-Editing" target="_blank" rel="noopener" aria-label="Open on Hugging Face">
+        <img alt="Hugging Face" src="https://img.shields.io/badge/HuggingFace-Space-ffd21e?logo=huggingface&logoColor=black" />
+      </a>
+      <a class="badge-img" href="https://github.com/little-misfit/GRAG-Image-Editing" target="_blank" rel="noopener" aria-label="GitHub repository">
+        <img alt="GitHub" src="https://img.shields.io/badge/GitHub-Code-111111?logo=github&logoColor=white" />
+      </a>
+    </div>
 
-  <style>
-  /* 让徽章排成一行，并跟你的页面风格匹配 */
-  .badges { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
-  .badge-img img { height: 20px; display:block; }
-  @media (min-width: 980px){ .badges { margin-top: 10px; } }
-  </style>
     <div class="card intro-figure">
       <img src="assets/main.jpg" alt="Principle diagram" loading="lazy">
     </div>
+
     <h2>Abstract</h2>
-    <p class="muted">Diffusion Transformers (DiT) have become the backbone of modern instruction-driven image editing. Yet, their capabilities remain limited by a trade-off between reference consistency and responsiveness to editing instructions. We observe a significant bias value at fixed embedding indices, which participates as a weight in the computation of attention scores. Leveraging this phenomenon, we propose Group Relative Attention Guidance (GRAG), which treats the mean of group feature vectors as a bias. By modulating the relative deviations of tokens from this bias, GRAG enhances tokens aligned with the bias direction, thereby producing more accurate editing results. Validation experiments on the latest baselines demonstrate that GRAG effectively improves the editing performance of existing models.</p>
+    <p class="muted">Recently, image editing based on Diffusion-in-Transformer (DiT) models has undergone rapid development. However, existing editing methods often lack effective control over the degree of editing, limiting their ability to achieve more customized results. To address this limitation, we investigate the MM-Attention mechanism within the DiT model and observe that the Query (Q) and Key (K) tokens share a bias vector that is only layer-dependent. We interpret this bias as representing the model's inherent editing behavior, while the delta between each token and its corresponding bias encodes the content-specific editing signals. Based on this insight, we propose Group Relative Attention Guidance (GRAG), a simple yet effective method that reweights the delta values of different tokens to modulate the focus of the model on the input image relative to the editing instruction, enabling continuous and fine-grained control over editing intensity without any tuning. Extensive experiments conducted on existing image editing frameworks demonstrate that GRAG can be integrated with as few as four lines of code, consistently enhancing editing quality. Moreover, compared to the commonly used Classifier-Free Guidance, GRAG achieves smoother and more precise control over the degree of editing.</p>
+
     <div class="card intro-figure">
       <img src="assets/intro.jpg" alt="Principle diagram" loading="lazy">
     </div>
 
+    <h2>Method</h2>
+    <p class="muted">The variations between individual token embeddings and the bias vector reflect how the editing content relates to the current layer's editing action. By modulating their relative relationship, it becomes possible to achieve accurate and continuous control over the editing instructions. Based on this insight, we propose Group Relative Attention Guidance (GRAG). As illustrated in the blow, we modify the cross-attention component of the MM-Attention corresponding to the query Q<sub>e</sub>. K<sub>s</sub> is selected as a group of tokens, to which group-relative modulation is applied. An illustration of applying Group Relative Attention Guidance in the MM-DiT image editing model.</p>
+
+    <div class="card intro-figure">
+      <img src="assets/method.jpg" alt="Principle diagram" loading="lazy">
+    </div>
+
     <h2>Results</h2>
-    <div id="samples"></div>
+    <h3>Baseline+GRAG</h3>
+    <div id="compare-only" class="grid3"></div>
+
+    <h3 style="margin-top:24px">Continue Editing</h3>
+    <div id="strength-only" class="grid3"></div>
   </div>
 
   <script>
-    const SAMPLES = [
+
+    const Comparsion_SAMPLES = [
       {
-        id: 's1',
-        title: 'Sky Recolor',
-        original: 'assets/samples/sky/original.jpg',
-        instruction: 'Turn the cloudy sky into a vivid warm sunset.',
-        before: 'assets/samples/sky/before.jpg',
+        id: 'step1x-1',
+        title: 'Step1X-Edit: Change Material',
+        original: 'assets/samples/step1x-edit/000000000020.jpg',
+        instruction: 'Turn the real birds to origami birds.',
+        before: 'assets/samples/step1x-edit/000000000020+grag.jpg',
         guidanceVariants: [
-          { label: 'λ=0.90', src: 'assets/samples/sky/after_0.90.jpg' },
-          { label: 'λ=0.95', src: 'assets/samples/sky/after_0.95.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.05.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.10.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.15.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.20.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.25.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.30.jpg' },
+          { label: '', src: 'assets/samples/step1x-edit/000000000020-step1x.jpg' },
         ],
       },
       {
-        id: 's2',
-        title: 'Object Replacement',
-        original: 'assets/samples/object/original.jpg',
-        instruction: 'Replace the mug with a blue teapot.',
-        before: 'assets/samples/object/before.jpg',
+        id: 'step1x-2',
+        title: 'Step1X-Edit: Change Content',
+        original: 'assets/samples/step1x-edit/000000000001.jpg',
+        instruction: 'Change the cake shape to square.',
+        before: 'assets/samples/step1x-edit/000000000001+grag.jpg',
         guidanceVariants: [
-          { label: 'λ=0.90', src: 'assets/samples/object/after_0.90.jpg' },
-          { label: 'λ=0.95', src: 'assets/samples/object/after_0.95.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/object/after_1.05.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/object/after_1.10.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/object/after_1.15.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/object/after_1.20.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/object/after_1.25.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/object/after_1.30.jpg' },
+          { label: '', src: 'assets/samples/step1x-edit/000000000001-step1x.jpg' },
+        ],
+      },
+      {
+        id: 'step1x-3',
+        title: 'Step1X-Edit: Change Object',
+        original: 'assets/samples/step1x-edit/000000000056.jpg',
+        instruction: 'Replace the meerkat with a lion.',
+        before: 'assets/samples/step1x-edit/000000000056+grag.jpg',
+        guidanceVariants: [
+          { label: '', src: 'assets/samples/step1x-edit/000000000056-step1x.jpg' },
+        ],
+      },
+      
+      {
+        id: 'qwen-1',
+        title: 'Qwen-Edit: Change Objects',
+        original: 'assets/samples/qwen-edit/000000000113.jpg',
+        instruction: 'Replace the dogs with rabbits.',
+        before: 'assets/samples/qwen-edit/000000000113+grag.jpg',
+        guidanceVariants: [
+          { label: '', src: 'assets/samples/qwen-edit/000000000113-qwen.jpg' },
+        ],
+      },
+      {
+        id: 'qwen-2',
+        title: 'Qwen-Edit: Change Color',
+        original: 'assets/samples/qwen-edit/000000000060.jpg',
+        instruction: 'Change color of apple from yellow to red.',
+        before: 'assets/samples/qwen-edit/000000000060+grag.jpg',
+        guidanceVariants: [
+          { label: '', src: 'assets/samples/qwen-edit/000000000060-qwen.jpg' },
+        ],
+      },
+      {
+        id: 'qwen-3',
+        title: 'Qwen-Edit: Change Object',
+        original: 'assets/samples/qwen-edit/000000000019.jpg',
+        instruction: 'Change the animal from tiger to cat.',
+        before: 'assets/samples/qwen-edit/000000000019+grag.jpg',
+        guidanceVariants: [
+          { label: '', src: 'assets/samples/qwen-edit/000000000019-qwen.jpg' },
+        ],
+      },
+
+      {
+        id: 'kontext-1',
+        title: 'Kontext-Dev: Add Object',
+        original: 'assets/samples/kontext/723000000001.jpg',
+        instruction: 'Add a plastic bowl to the table.',
+        before: 'assets/samples/kontext/723000000001+grag.jpg',
+        guidanceVariants: [
+          { label: '', src: 'assets/samples/kontext/723000000001-kontext.jpg' },
+        ],
+      },
+      {
+        id: 'kontext-2',
+        title: 'Kontext-Dev: Change Style',
+        original: 'assets/samples/kontext/911000000005.jpg',
+        instruction: 'Change watercolor painting to digital art.',
+        before: 'assets/samples/kontext/911000000005+grag.jpg',
+        guidanceVariants: [
+          { label: '', src: 'assets/samples/kontext/911000000005-kontext.jpg' },
+        ],
+      },
+      {
+        id: 'kontext-3',
+        title: 'Kontext-Dev: Change Pose',
+        original: 'assets/samples/kontext/522000000000.jpg',
+        instruction: "Make the man's arms cross.",
+        before: 'assets/samples/kontext/522000000000+grag.jpg',
+        guidanceVariants: [
+          { label: '', src: 'assets/samples/kontext/522000000000-kontext.jpg' },
+        ],
+      },
+    ];
+    const Slider_SAMPLES = [
+      {
+        id: 's3',
+        title: 'Style Transfer',
+        original: 'assets/samples/style/original.jpg',
+        instruction: 'Render the scene in watercolor style.',
+        before: 'assets/samples/style/before.jpg',
+        guidanceVariants: [
+          { label: 'λ=0.8', src: 'assets/samples/style/after_1.30.jpg' },
+          { label: 'λ=0.7', src: 'assets/samples/style/after_1.25.jpg' },
+          { label: 'λ=0.6', src: 'assets/samples/style/after_1.20.jpg' },
+          { label: 'λ=0.5', src: 'assets/samples/style/after_1.15.jpg' },
+          { label: 'λ=0.4', src: 'assets/samples/style/after_1.10.jpg' },
+          { label: 'λ=0.3', src: 'assets/samples/style/after_1.05.jpg' },
+          { label: 'λ=0.2', src: 'assets/samples/style/after_0.95.jpg' },
+          { label: 'λ=0.1', src: 'assets/samples/style/after_0.90.jpg' },
         ],
       },
       {
@@ -138,48 +226,14 @@
         instruction: 'Render the scene in watercolor style.',
         before: 'assets/samples/style/before.jpg',
         guidanceVariants: [
-          { label: 'λ=0.90', src: 'assets/samples/style/after_0.90.jpg' },
-          { label: 'λ=0.95', src: 'assets/samples/style/after_0.95.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/style/after_1.05.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/style/after_1.10.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/style/after_1.15.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/style/after_1.20.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/style/after_1.25.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/style/after_1.30.jpg' },
-        ],
-      },
-      {
-        id: 's1',
-        title: 'Sky Recolor',
-        original: 'assets/samples/sky/original.jpg',
-        instruction: 'Turn the cloudy sky into a vivid warm sunset.',
-        before: 'assets/samples/sky/before.jpg',
-        guidanceVariants: [
-          { label: 'λ=0.90', src: 'assets/samples/sky/after_0.90.jpg' },
-          { label: 'λ=0.95', src: 'assets/samples/sky/after_0.95.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.05.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.10.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.15.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.20.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.25.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.30.jpg' },
-        ],
-      },
-      {
-        id: 's2',
-        title: 'Object Replacement',
-        original: 'assets/samples/object/original.jpg',
-        instruction: 'Replace the mug with a blue teapot.',
-        before: 'assets/samples/object/before.jpg',
-        guidanceVariants: [
-          { label: 'λ=0.90', src: 'assets/samples/object/after_0.90.jpg' },
-          { label: 'λ=0.95', src: 'assets/samples/object/after_0.95.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/object/after_1.05.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/object/after_1.10.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/object/after_1.15.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/object/after_1.20.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/object/after_1.25.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/object/after_1.30.jpg' },
+          { label: 'λ=0.8', src: 'assets/samples/style/after_1.30.jpg' },
+          { label: 'λ=0.7', src: 'assets/samples/style/after_1.25.jpg' },
+          { label: 'λ=0.6', src: 'assets/samples/style/after_1.20.jpg' },
+          { label: 'λ=0.5', src: 'assets/samples/style/after_1.15.jpg' },
+          { label: 'λ=0.4', src: 'assets/samples/style/after_1.10.jpg' },
+          { label: 'λ=0.3', src: 'assets/samples/style/after_1.05.jpg' },
+          { label: 'λ=0.2', src: 'assets/samples/style/after_0.95.jpg' },
+          { label: 'λ=0.1', src: 'assets/samples/style/after_0.90.jpg' },
         ],
       },
       {
@@ -189,134 +243,174 @@
         instruction: 'Render the scene in watercolor style.',
         before: 'assets/samples/style/before.jpg',
         guidanceVariants: [
-          { label: 'λ=0.90', src: 'assets/samples/style/after_0.90.jpg' },
-          { label: 'λ=0.95', src: 'assets/samples/style/after_0.95.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/style/after_1.05.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/style/after_1.10.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/style/after_1.15.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/style/after_1.20.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/style/after_1.25.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/style/after_1.30.jpg' },
-        ],
-      },
-      {
-        id: 's1',
-        title: 'Sky Recolor',
-        original: 'assets/samples/sky/original.jpg',
-        instruction: 'Turn the cloudy sky into a vivid warm sunset.',
-        before: 'assets/samples/sky/before.jpg',
-        guidanceVariants: [
-          { label: 'λ=0.90', src: 'assets/samples/sky/after_0.90.jpg' },
-          { label: 'λ=0.95', src: 'assets/samples/sky/after_0.95.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.05.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.10.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.15.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.20.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/sky/after_1.25.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/sky/after_1.30.jpg' },
-        ],
-      },
-      {
-        id: 's2',
-        title: 'Object Replacement',
-        original: 'assets/samples/object/original.jpg',
-        instruction: 'Replace the mug with a blue teapot.',
-        before: 'assets/samples/object/before.jpg',
-        guidanceVariants: [
-          { label: 'λ=0.90', src: 'assets/samples/object/after_0.90.jpg' },
-          { label: 'λ=0.95', src: 'assets/samples/object/after_0.95.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/object/after_1.05.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/object/after_1.10.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/object/after_1.15.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/object/after_1.20.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/object/after_1.25.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/object/after_1.30.jpg' },
-        ],
-      },
-      {
-        id: 's3',
-        title: 'Style Transfer',
-        original: 'assets/samples/style/original.jpg',
-        instruction: 'Render the scene in watercolor style.',
-        before: 'assets/samples/style/before.jpg',
-        guidanceVariants: [
-          { label: 'λ=0.90', src: 'assets/samples/style/after_0.90.jpg' },
-          { label: 'λ=0.95', src: 'assets/samples/style/after_0.95.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/style/after_1.05.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/style/after_1.10.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/style/after_1.15.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/style/after_1.20.jpg' },
-          { label: 'λ=1.05', src: 'assets/samples/style/after_1.25.jpg' },
-          { label: 'λ=1.10', src: 'assets/samples/style/after_1.30.jpg' },
+          { label: '0.8', src: 'assets/samples/style/after_1.30.jpg' },
+          { label: '0.7', src: 'assets/samples/style/after_1.25.jpg' },
+          { label: '0.6', src: 'assets/samples/style/after_1.20.jpg' },
+          { label: '0.5', src: 'assets/samples/style/after_1.15.jpg' },
+          { label: '0.4', src: 'assets/samples/style/after_1.10.jpg' },
+          { label: '0.3', src: 'assets/samples/style/after_1.05.jpg' },
+          { label: '0.2', src: 'assets/samples/style/after_0.95.jpg' },
+          { label: '0.1', src: 'assets/samples/style/after_0.90.jpg' },
         ],
       },
     ];
 
+
     const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
     const el=(tag,cls,html)=>{const n=document.createElement(tag); if(cls) n.className=cls; if(html!=null) n.innerHTML=html; return n;};
 
-    function makeCompare(beforeSrc, afterSrcInitial){
-      let ratio=0.5; // 0..1
-      const root=el('div','compare');
 
-      const before=new Image(); before.src=beforeSrc; before.alt='Before'; before.loading='lazy'; before.draggable=false;
-      const afterWrap=el('div','after-clip');
-      const after=new Image(); after.src=afterSrcInitial; after.alt='After'; after.loading='lazy'; after.draggable=false;
-      afterWrap.appendChild(after);
+    class CompareViewer {
+      /**
+       * @param {string} beforeSrc - before
+       * @param {string} afterSrc - after 
+       */
+      constructor(beforeSrc, afterSrc){
+        this.ratio = 0.5; // 0..1
+        this.root = el('div','compare');
 
-      const line=el('div','handle-line');
-      const pill=el('div','handle-pill'); pill.textContent='Drag';
+        const before = new Image();
+        before.src = beforeSrc; before.alt='Before'; before.loading='lazy'; before.draggable=false;
 
-      root.append(before, afterWrap, line, pill);
-root.addEventListener('dragstart', (e)=> e.preventDefault());
-root.addEventListener('mousedown', (e)=> e.preventDefault());
+        this.afterWrap = el('div','after-clip');
+        this.after = new Image();
+        this.after.src = afterSrc; this.after.alt='After'; this.after.loading='lazy'; this.after.draggable=false;
+        this.afterWrap.appendChild(this.after);
 
-      function render(){
-        const pct=clamp(ratio*100,0,100);
-        afterWrap.style.clipPath=`inset(0 ${clamp(100-pct,0,100)}% 0 0)`;
-        line.style.left=pct+'%';
-        pill.style.left=pct+'%';
+        this.line = el('div','handle-line');
+        this.pill = el('div','handle-pill'); this.pill.textContent='👉';
+
+        this.root.append(before, this.afterWrap, this.line, this.pill);
+        this._bind();
+        this._render();
       }
-      render();
 
-      let dragging=false, pid=null;
-      function setFromX(clientX){ const r=root.getBoundingClientRect(); const x=clientX - r.left; ratio=clamp(x/r.width,0,1); render(); }
-      root.addEventListener('pointerdown', (e)=>{ e.preventDefault(); dragging=true; pid=e.pointerId; root.setPointerCapture?.(e.pointerId); setFromX(e.clientX);});
-      root.addEventListener('pointermove',e=>{ if(!dragging) return; setFromX(e.clientX); });
-      window.addEventListener('pointerup',e=>{ if(dragging && e.pointerId===pid){ dragging=false; root.releasePointerCapture?.(e.pointerId); } });
+      _bind(){
+        this.root.addEventListener('dragstart', (e)=> e.preventDefault());
+        this.root.addEventListener('mousedown', (e)=> e.preventDefault());
 
-      root.setAttribute('tabindex','0');
-      root.addEventListener('keydown',e=>{ if(e.key==='ArrowLeft'){ ratio=clamp(ratio-0.02,0,1); render(); } if(e.key==='ArrowRight'){ ratio=clamp(ratio+0.02,0,1); render(); } });
+        let dragging=false, pid=null;
+        const setFromX=(clientX)=>{ const r=this.root.getBoundingClientRect(); const x=clientX - r.left; this.setRatio(x/r.width); };
 
-      return { root, setAfter:(src)=>{ after.src=src; } };
+        this.root.addEventListener('pointerdown',(e)=>{ e.preventDefault(); dragging=true; pid=e.pointerId; this.root.setPointerCapture?.(e.pointerId); setFromX(e.clientX);});
+        this.root.addEventListener('pointermove',(e)=>{ if(!dragging) return; setFromX(e.clientX); });
+        window.addEventListener('pointerup',(e)=>{ if(dragging && e.pointerId===pid){ dragging=false; this.root.releasePointerCapture?.(e.pointerId); } });
+
+        this.root.setAttribute('tabindex','0');
+        this.root.addEventListener('keydown',e=>{ if(e.key==='ArrowLeft'){ this.setRatio(this.ratio-0.02); } if(e.key==='ArrowRight'){ this.setRatio(this.ratio+0.02); } });
+      }
+
+      _render(){
+        const pct=clamp(this.ratio*100,0,100);
+        this.afterWrap.style.clipPath=`inset(0 ${clamp(100-pct,0,100)}% 0 0)`;
+        this.line.style.left=pct+'%';
+        this.pill.style.left=pct+'%';
+      }
+
+      /**  [0,1] */
+      setRatio(v){ this.ratio = clamp(v,0,1); this._render(); this._emit('ratiochange', this.ratio); }
+      /** After */
+      setAfter(src){ this.after.src=src; this._emit('aftersrcchange', src); }
+
+      on(type,handler){ (this._events||(this._events={}))[type]=(this._events[type]||[]); this._events[type].push(handler); return ()=>this.off(type,handler); }
+      off(type,handler){ if(!this._events||!this._events[type]) return; this._events[type]=this._events[type].filter(h=>h!==handler); }
+      _emit(type,payload){ if(!this._events||!this._events[type]) return; this._events[type].forEach(h=>{ try{ h(payload); }catch{} }); }
     }
 
-    function makeSampleCard(s){
-      const card=el('div','card sample');
-      const header=el('div',null,`<h3>${s.title}</h3><p class="muted" style="margin-top:6px">Instruction: ${s.instruction}</p>`);
 
-      // 两列：左原图、右对比控件（最小改动：仅限制图片尺寸）
+    class StrengthSlider {
+      /**
+       * @param {{label:string, src:string}[]} variants - 
+       * @param {number} initialIndex - 
+       */
+      constructor(variants, initialIndex=0){
+        this.variants = variants || [];
+        this.index = clamp(initialIndex, 0, Math.max(0, this.variants.length-1));
+
+        this.root = el('div');
+        const label=el('div','muted','Guidance Strength');
+        this.slider=document.createElement('input'); this.slider.type='range'; this.slider.className='slider';
+        this.slider.min=0; this.slider.max=String(Math.max(0,this.variants.length-1)); this.slider.step=1; this.slider.value=String(this.index);
+        this.ticks=el('div','ticks');
+        this.variants.forEach((v,i)=>{const t=el('div',i===this.index?'active':'',v.label); t.dataset.idx=String(i); this.ticks.appendChild(t);});
+        this.root.append(label, this.slider, this.ticks);
+
+        this._bind();
+      }
+
+      _bind(){
+        this.slider.addEventListener('input',()=>{ this.setIndex(parseInt(this.slider.value,10)); });
+        this.ticks.addEventListener('click',(e)=>{
+          const t=e.target; if(!(t instanceof HTMLElement)) return; const i=t.dataset?.idx; if(i==null) return; this.setIndex(parseInt(i,10));
+        });
+      }
+
+      setIndex(i){
+        const ni=clamp(i,0,Math.max(0,this.variants.length-1));
+        if(ni===this.index) return;
+        this.index=ni; this.slider.value=String(this.index);
+        [...this.ticks.children].forEach((c,ci)=>{ c.classList.toggle('active', ci===this.index); });
+        const cur=this.variants[this.index];
+        this._emit('change', { index:this.index, variant:cur });
+      }
+
+      on(type,handler){ (this._events||(this._events={}))[type]=(this._events[type]||[]); this._events[type].push(handler); return ()=>this.off(type,handler); }
+      off(type,handler){ if(!this._events||!this._events[type]) return; this._events[type]=this._events[type].filter(h=>h!==handler); }
+      _emit(type,payload){ if(!this._events||!this._events[type]) return; this._events[type].forEach(h=>{ try{ h(payload); }catch{} }); }
+    }
+
+
+    function makeCompareOnlyCard(s){
+      const card=el('div','card sample');
+      const header=el('div',null,`<h3>${s.title}</h3><p class="muted" style="margin-top:6px">${s.instruction}</p>`);
       const grid=el('div','sample-grid');
       const left=el('div','thumb'); left.innerHTML=`<img src="${s.original}" alt="Original" loading="lazy" draggable="false">`;
-      const cmp=makeCompare(s.before, s.guidanceVariants[0]?.src || s.before);
-
-      // 简单强度滑块（可选）
-      const sliderWrap=el('div',null);
-      const label=el('div','muted','Guidance Strength');
-      const slider=document.createElement('input'); slider.type='range'; slider.className='slider'; slider.min=0; slider.max=String(s.guidanceVariants.length-1); slider.step=1; slider.value=0;
-      const ticks=el('div','ticks'); s.guidanceVariants.forEach((v,i)=>{const t=el('div',i===0?'active':'',v.label); t.id=`tick-${s.id}-${i}`; ticks.appendChild(t);});
-      slider.addEventListener('input',()=>{ const idx=parseInt(slider.value,10); const v=s.guidanceVariants[idx]; cmp.setAfter(v.src); s.guidanceVariants.forEach((_,i)=>{ const t=document.getElementById(`tick-${s.id}-${i}`); if(t) t.classList.toggle('active', i===idx); }); });
-      sliderWrap.append(label, slider, ticks);
-
+      const cmp = new CompareViewer(s.before, (s.guidanceVariants[0]?.src || s.before));
       grid.append(left, cmp.root);
-      card.append(header, grid, sliderWrap);
+      card.append(header, grid);
       return card;
     }
 
+
+    function makeStrengthOnlyCard(s){
+      const card=el('div','card sample');
+      const header=el('div',null,`<h3>${s.title}</h3><p class=\"muted\" style=\"margin-top:6px\">Instruction: ${s.instruction}</p>`);
+      const grid=el('div','sample-grid');
+      const left=el('div','thumb'); left.innerHTML=`<img src="${s.original}" alt="Original" loading="lazy" draggable="false">`;
+      const right=el('div','preview');
+      const previewImg=new Image();
+      previewImg.alt='Preview'; previewImg.loading='lazy'; previewImg.draggable=false;
+      previewImg.src = s.guidanceVariants[0]?.src || s.before;
+      right.appendChild(previewImg);
+
+      const slider = new StrengthSlider(s.guidanceVariants, 0);
+      slider.on('change', ({variant})=>{ if(variant?.src) previewImg.src = variant.src; });
+
+      grid.append(left, right);
+      card.append(header, grid, slider.root);
+      return card;
+    }
+
+
     (function init(){
-      const mount=document.getElementById('samples');
-      SAMPLES.forEach(s=>mount.appendChild(makeSampleCard(s)));
+      const mountCompare=document.getElementById('compare-only');
+      const mountStrength=document.getElementById('strength-only');
+      Comparsion_SAMPLES.forEach(s=>mountCompare.appendChild(makeCompareOnlyCard(s)));
+      Slider_SAMPLES.forEach(s=>mountStrength.appendChild(makeStrengthOnlyCard(s)));
     })();
   </script>
 </body>
+<footer style="margin-top:60px; padding:20px 0; border-top:1px solid #eee; text-align:center; font-size:14px; color:#666;">
+  <p><strong>Citation</strong></p>
+  <pre style="text-align:left; display:inline-block; background:#f9f9f9; padding:10px 16px; border-radius:8px; font-size:13px; line-height:1.5;">
+@article{zhang2025grag,
+  title={Group-Relative Attention Guidance for Image Editing},
+  author={Zhang, Xuanpu and Li, Second and Wang, Third},
+  journal={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year={2025}
+}
+  </pre>
+  <p>© 2025 Group-Relative Attention Guidance Authors</p>
+</footer>
+
 </html>
