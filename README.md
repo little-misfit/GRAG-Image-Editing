@@ -1,6 +1,6 @@
 # Group-Relative Attention Guidance for Image Editing
 
-[![arXiv](https://img.shields.io/badge/arXiv-2501.01234-b31b1b?logo=arxiv&logoColor=white)]([[https://arxiv.org/abs/2501.01234](https://arxiv.org/)](https://arxiv.org/abs/2510.24657))
+[![arXiv](https://img.shields.io/badge/arXiv-2501.01234-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2510.24657)
 <!-- [![Project Page](https://img.shields.io/badge/🌐%20Project-Page-blue)](https://yourname.github.io/GRAG-Project)
 [![Hugging Face Demo](https://img.shields.io/badge/🤗%20HuggingFace-Demo-yellow)](https://huggingface.co/spaces/your-org/GRAG)
 [![GitHub](https://img.shields.io/badge/GitHub-Code-black?logo=github)](https://github.com/yourname/GRAG) -->
