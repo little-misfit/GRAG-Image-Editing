@@ -15,7 +15,7 @@
 > Recent advances in Diffusion-in-Transformer (DiT) based image editing models have shown powerful editing capabilities, but lack continuous control over the editing strength.  
 > We propose **Group Relative Attention Guidance (GRAG)**, a simple yet effective tuning-free mechanism that enables smooth and fine-grained control over editing intensity by reweighting token-wise deltas relative to their shared bias vectors. -->
 
----
+
 
 ### 🖼️ Overview
 
