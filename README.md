@@ -1,8 +1,8 @@
 # Group-Relative Attention Guidance for Image Editing
 
 [![arXiv](https://img.shields.io/badge/arXiv-2501.01234-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2510.24657)
-<!-- [![Project Page](https://img.shields.io/badge/🌐%20Project-Page-blue)](https://yourname.github.io/GRAG-Project)
-[![Hugging Face Demo](https://img.shields.io/badge/🤗%20HuggingFace-Demo-yellow)](https://huggingface.co/spaces/your-org/GRAG)
+[![Project Page](https://img.shields.io/badge/🌐%20Project-Page-blue)](https://little-misfit.github.io/GRAG-Image-Editing/)
+<!-- [![Hugging Face Demo](https://img.shields.io/badge/🤗%20HuggingFace-Demo-yellow)](https://huggingface.co/spaces/your-org/GRAG)
 [![GitHub](https://img.shields.io/badge/GitHub-Code-black?logo=github)](https://github.com/yourname/GRAG) -->
 
 ---
@@ -27,6 +27,46 @@
 
 ---
 
+## 📰 News
+- **2025-11-03** — ✨ Added GRAG for [Qwen-Image-Edit](https://huggingface.co/Qwen/Qwen-Image-Edit).
+
+---
+
+### 🧩 Installation
+
+```bash
+git clone https://github.com/little-misfit/GRAG-Image-Editing.git
+cd GRAG-Image-Editing/Qwen-Edit-GRAG
+conda create -n grag python=3.10 -y
+conda activate grag
+pip install -r requirements.txt
+```
+
+---
+
+### 🔧 Usage Example
+
+The recommended range for the grag parameter is **0.8** ~ **1.7**, adjusted in **0.01** increments.
+
+##### One image editing
+```bash
+sh inference.sh
+```
+
+##### Images editing ([PIE](https://github.com/cure-lab/PnPInversion?tab=readme-ov-file) benchmark format)
+```bash
+sh PIE_test.sh
+```
+
+##### Gradio image editing
+```bash
+python app.py
+```
+
+Results will be saved under `results/`.
+
+---
+
 <!-- ### 🚀 Features
 - 🎯 **Training-free** — plug-and-play with existing DiT-based pipelines  
 - 🪶 **Lightweight** — integrate with as few as *4 lines of code*  
@@ -35,27 +75,9 @@
 
 <!-- --- -->
 
-<!-- ### 🧩 Installation
+<!-- 
 
-```bash
-git clone https://github.com/yourname/GRAG.git
-cd GRAG
-conda create -n grag python=3.10
-conda activate grag
-pip install -r requirements.txt
-```
 
----
-
-### 🧠 Usage Example
-
-```bash
-python run_edit.py   --model flux   --image assets/sample.jpg   --prompt "turn the cloudy sky into a sunset"   --lambda 1.1
-```
-
-Results will be saved under `outputs/`.
-
----
 
 ### 📂 Repository Structure
 
@@ -74,7 +96,7 @@ GRAG/
 
 ### 🧪 TODO
 - [ ] Add huggingface space for grag
-- [ ] Release code of grag
+- [✅] Release code of grag
 - [ ] Release visualization code for embedding feature
 
 ---

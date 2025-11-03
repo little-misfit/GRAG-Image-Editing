@@ -1,0 +1,14 @@
+accelerate
+diffusers
+gradio
+ipykernel
+jaraco.collections
+matplotlib
+pathlib
+pickleshare
+pip-chill
+termcolor
+tomli
+torch
+torchvision
+transformers
