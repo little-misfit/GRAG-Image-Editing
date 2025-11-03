@@ -12,3 +12,4 @@ tomli
 torch
 torchvision
 transformers
+huggingface_hub

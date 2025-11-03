@@ -21,7 +21,8 @@ from typing import Optional
 import gradio as gr
 import torch
 from PIL import Image
-
+from huggingface_hub import snapshot_download
+import os
 # --- your project imports (as in the original script) ---
 from hacked_models.scheduler import FlowMatchEulerDiscreteScheduler
 from hacked_models.pipeline import QwenImageEditPipeline
@@ -106,7 +107,23 @@ def predict(
     # Return the first image (same as original save behavior)
     return image_batch[0]
 
-pipe = pipe = _load_pipeline("Qwen/Qwen-Image-Edit")
+
+
+
+
+model_dir = "Qwen-Image-Edit"
+repo_id = "Qwen/Qwen-Image-Edit"
+
+if not os.path.exists(model_dir) or not os.listdir(model_dir):
+    snapshot_download(repo_id=repo_id, local_dir=model_dir, local_dir_use_symlinks=False)
+    print(f"Model downloaded to {model_dir}")
+else:
+    print(f"Model already exists at {model_dir}")
+
+
+
+pipe = _load_pipeline(model_dir)
+
 
 with gr.Blocks(title="Qwen Image Edit — Minimal GRAG Demo") as demo:
     gr.Markdown("# Qwen Image Edit — Minimal GRAG Demo\nUpload an image, enter your edit instruction, and set GRAG params.")
