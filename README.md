@@ -96,7 +96,7 @@ GRAG/
 
 ### 🧪 TODO
 - [ ] Add huggingface space for grag
-- [✅] Release code of grag
+- [x] Release code of grag
 - [ ] Release visualization code for embedding feature
 
 ---
