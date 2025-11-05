@@ -28,6 +28,7 @@
 ---
 
 ## 📰 News
+- **2025-11-05** — 🎉 [GRAG-ComfyUI](https://github.com/amir84ferdos/ComfyUI-GRAG-ArchAi3D) is now available — 🥳thanks to [Amir Ferdos](https://github.com/amir84ferdos) for his contribution!
 - **2025-11-03** — ✨ Added GRAG for [Qwen-Image-Edit](https://huggingface.co/Qwen/Qwen-Image-Edit).
 
 ---
