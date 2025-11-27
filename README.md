@@ -1,6 +1,6 @@
 # Group-Relative Attention Guidance for Image Editing
 
-[![arXiv](https://img.shields.io/badge/arXiv-2501.01234-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2510.24657)
+[![arXiv](https://img.shields.io/badge/arXiv-2510.24657-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2510.24657)
 [![Project Page](https://img.shields.io/badge/🌐%20Project-Page-blue)](https://little-misfit.github.io/GRAG-Image-Editing/)
 [![Hugging Face Demo](https://img.shields.io/badge/🤗%20HuggingFace-Demo-yellow)](https://huggingface.co/spaces/Little-ECHO/GRAG-Image-Editing)
 [![GitHub](https://img.shields.io/badge/GitHub-Code-black?logo=github)](https://github.com/little-misfit/GRAG-Image-Editing)
